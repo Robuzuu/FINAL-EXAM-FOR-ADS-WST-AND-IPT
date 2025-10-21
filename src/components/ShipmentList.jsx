@@ -43,9 +43,10 @@ export default function ShipmentList({ auth, onSelect, t }) {
               <div className="font-medium">{s.tracking_number || `#${s.id}`}</div>
               <div className="text-sm text-gray-700 dark:text-gray-300">{s.origin} → {s.destination}</div>
               {s.status && <div className="text-xs text-gray-700 dark:text-gray-400">Status: {s.status}</div>}
+              <div className="text-xs text-gray-700 dark:text-gray-400">Check Status: {(s.status || '').toString()}</div>
             </div>
             <button className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-900 dark:text-gray-100" onClick={() => onSelect && onSelect(s)}>
-              {t ? t('ship.list.view') : 'View'}
+              {t ? 'Track Parcel' : 'Track Parcel'}
             </button>
           </li>
         ))}
