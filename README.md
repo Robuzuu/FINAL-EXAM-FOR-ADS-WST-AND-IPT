@@ -6,23 +6,22 @@
 : `en`, `fil`, `ja` with a simple translator
 
  React + Vite
-Tailwind via CDN (see `frontend/index.html`)
+Tailwind via CDN 
 
 
-   ```bash
+
    npm install
-   ```
+  
 
-   ```bash
+
    npm run dev
    
-  
- Build for production
-   ```bash
+
+
    npm run build
 
-Preview the production build
-   ```bash
+
+
    npm run preview
    
 
