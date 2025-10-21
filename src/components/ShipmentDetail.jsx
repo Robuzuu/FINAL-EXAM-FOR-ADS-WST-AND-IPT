@@ -5,6 +5,11 @@ export default function ShipmentDetail({ auth, shipment, onClose, onSaved, t }) 
   const [assignId, setAssignId] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const formatDT = (v) => {
+    if (!v) return '-';
+    const d = new Date(v);
+    return isNaN(d) ? String(v) : d.toLocaleString();
+  };
 
   if (!shipment) return null;
 
@@ -67,6 +72,8 @@ export default function ShipmentDetail({ auth, shipment, onClose, onSaved, t }) 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-[0.98rem]">
         <div className="text-gray-900 dark:text-gray-100"><span className="font-medium">{t ? t('ship.detail.tracking') : 'Tracking'}:</span> <span className="text-gray-800 dark:text-gray-200">{shipment.tracking_number || `#${shipment.id}`}</span></div>
         <div className="text-gray-900 dark:text-gray-100"><span className="font-medium">{t ? t('ship.detail.createdBy') : 'Created By'}:</span> <span className="text-gray-800 dark:text-gray-200">{shipment.created_by}</span></div>
+        <div className="text-gray-900 dark:text-gray-100"><span className="font-medium">Created At:</span> <span className="text-gray-800 dark:text-gray-200">{formatDT(shipment.created_at || shipment.createdAt)}</span></div>
+        <div className="text-gray-900 dark:text-gray-100"><span className="font-medium">Last Updated:</span> <span className="text-gray-800 dark:text-gray-200">{formatDT(shipment.updated_at || shipment.updatedAt)}</span></div>
         <div className="text-gray-900 dark:text-gray-100"><span className="font-medium">{t ? t('ship.detail.sender') : 'Sender'}:</span> <span className="text-gray-800 dark:text-gray-200">{shipment.sender_name} ({shipment.sender_phone || '-'})</span></div>
         <div className="text-gray-900 dark:text-gray-100"><span className="font-medium">{t ? t('ship.detail.receiver') : 'Receiver'}:</span> <span className="text-gray-800 dark:text-gray-200">{shipment.receiver_name} ({shipment.receiver_phone || '-'})</span></div>
         <div className="text-gray-900 dark:text-gray-100"><span className="font-medium">{t ? t('ship.detail.route') : 'Route'}:</span> <span className="text-gray-800 dark:text-gray-200">{shipment.origin} → {shipment.destination}</span></div>
