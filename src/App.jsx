@@ -14,7 +14,8 @@ import { createTranslator } from './lib/i18n.js';
 
 export default function App() {
   const auth = useAuth();
-  const [view, setView] = useState('loginUser');  'loginAdmin' | 'register' | 'dashboard' | 'create'
+  
+  const [view, setView] = useState('welcome');
   const [selectedShipment, setSelectedShipment] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0); 
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -24,7 +25,7 @@ export default function App() {
 
   useEffect(() => {
     if (auth.user) setView('dashboard');
-    else setView((v) => (v === 'loginAdmin' || v === 'register') ? v : 'loginUser');
+    else setView((v) => (v === 'register' || v === 'loginUser') ? v : 'welcome');
   }, [auth.user]);
 
   const handleCreated = () => {
@@ -34,7 +35,7 @@ export default function App() {
   const handleAuthSuccess = () => setView('dashboard');
 
   useEffect(() => {
-    if (!auth.user) setView((v) => (v === 'loginAdmin' || v === 'register') ? v : 'loginUser');
+    if (!auth.user) setView((v) => (v === 'register' || v === 'loginUser') ? v : 'welcome');
   }, [auth.user]);
 
  
@@ -52,29 +53,30 @@ export default function App() {
   const handleLogout = () => {
     if (auth && auth.logout) auth.logout();
     setSettingsOpen(false);
-    setView('loginUser');
+    setView('welcome');
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-black dark:text-gray-100">
       <Nav auth={auth} onNavigate={(v) => setView(v)} onSettings={() => setSettingsOpen(true)} t={t} />
 
       {!auth.user ? (
         <main className="max-w-3xl mx-auto p-8">
-          {view === 'loginAdmin' ? (
-            <Login adminMode auth={auth} onSwitch={() => setView('register')} onSuccess={handleAuthSuccess} t={t} />
-          ) : view === 'register' ? (
-            <Register auth={auth} onSwitch={() => setView('loginUser')} onSuccess={handleAuthSuccess} t={t} />
-          ) : (
+          {view === 'register' ? (
+            <Register
+              auth={auth}
+              onSwitch={() => setView('loginUser')}
+              onSuccess={() => setView('loginUser')}
+              t={t}
+            />
+          ) : view === 'loginUser' ? (
             <Login auth={auth} onSwitch={() => setView('register')} onSuccess={handleAuthSuccess} t={t} />
+          ) : (
+            <section className="card text-left">
+              <h1 className="text-2xl font-bold">Welcome to {t('nav.logo')}</h1>
+              <p className="mt-2 text-sm text-black dark:text-gray-300">Use the navigation bar to Login or Register to get started.</p>
+            </section>
           )}
-
-          <section className="card mt-6 text-left">
-            <h3 className="text-lg font-semibold">{t('demo.about.title')}</h3>
-            <p className="text-sm text-gray-700 dark:text-gray-300">
-              {t('demo.about.body')}
-            </p>
-          </section>
         </main>
       ) : (
         <main className="max-w-7xl mx-auto p-8">
@@ -85,20 +87,6 @@ export default function App() {
             </div>
 
             <aside>
-              <div className="card">
-                <h3 className="font-semibold">{t('quick.title')}</h3>
-                <div className="mt-3 flex flex-col gap-2">
-                  <button
-                    onClick={() => navigator.clipboard && navigator.clipboard.writeText(auth.user?.email || '')}
-                    className="px-3 py-2 border rounded hover:bg-gray-50 dark:hover:bg-gray-800"
-                  >
-                    {t('quick.copyEmail')}
-                  </button>
-                  <button onDoubleClick={() => alert('Double-click demo')} className="px-3 py-2 border rounded hover:bg-gray-50 dark:hover:bg-gray-800">{t('quick.doubleClick')}</button>
-                  <input onFocus={() => console.log('Quick input focus')} onBlur={() => console.log('Quick input blur')} placeholder={t('quick.placeholder')} className="border p-2 rounded bg-white dark:bg-gray-800" />
-                </div>
-              </div>
-
               {auth.user?.role === 'admin' && (
                 <AdminPanel auth={auth} />
               )}
@@ -129,6 +117,7 @@ export default function App() {
         language={language}
         setLanguage={setLanguage}
         onLogout={handleLogout}
+        isAuthenticated={!!auth.user}
       />
     </div>
   );
