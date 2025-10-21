@@ -1,7 +1,7 @@
 
 export const messages = {
   en: {
-    'nav.logo': 'CourierTrack',
+    'nav.logo': 'Courier Track',
     'nav.home': 'Home',
     'nav.login': 'Login',
     'nav.userLogin': 'User Login',
@@ -69,7 +69,7 @@ export const messages = {
     'ship.detail.close': 'Close',
   },
   fil: {
-    'nav.logo': 'CourierTrack',
+    'nav.logo': 'Courier Track',
     'nav.home': 'Bahay',
     'nav.login': 'Mag-login',
     'nav.userLogin': 'Login (User)',
@@ -137,7 +137,7 @@ export const messages = {
     'ship.detail.close': 'Isara',
   },
   ja: {
-    'nav.logo': 'CourierTrack',
+    'nav.logo': 'Courier Track',
     'nav.home': 'ホーム',
     'nav.login': 'ログイン',
     'nav.userLogin': 'ユーザーログイン',
