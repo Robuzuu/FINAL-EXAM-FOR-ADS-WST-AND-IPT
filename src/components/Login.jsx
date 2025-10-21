@@ -55,9 +55,8 @@ export default function Login({ auth, onSwitch, onSuccess, t, adminMode = false 
           />
         </div>
 
-        <div className="flex gap-2">
-          <button type="submit" className="bg-blue-600 text-white px-3 py-1 rounded">{t ? t('auth.login.submit') : 'Login'}</button>
-          <button type="button" onClick={onSwitch} className="px-3 py-1 border rounded">{t ? t('auth.login.switch') : 'Register'}</button>
+        <div className="flex justify-center">
+          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">{t ? t('auth.login.submit') : 'Login'}</button>
         </div>
       </form>
     </div>
