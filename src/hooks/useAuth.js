@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-const API_BASE = '/courier/backend/api';
+const API_BASE = 'http://localhost/courier/backend/api';
 
 
 export function useLocalStorage(key, initialValue = null) {
@@ -109,7 +109,7 @@ export function useFetch() {
       return json;
     } catch (err) {
       if (err && err.name === 'AbortError') throw { error: 'Request aborted' };
-      // Avoid empty catch block: rethrow the error for caller to handle
+      
       throw err;
     }
   }, []);
@@ -117,57 +117,40 @@ export function useFetch() {
   return { fetchJson };
 }
 
-// 9) useAuth - main authentication hook (uses useLocalStorage and useFetch)
-// Provides: user, token, login(), register(), logout(), authFetch()
-export function useAuth() {
+ {
   const [user, setUser] = useLocalStorage('courier_user', null);
   const [token, setToken] = useLocalStorage('courier_token', null);
   const { fetchJson } = useFetch();
 
-  // login: calls backend, stores token & user
+ 
   const login = useCallback(async (email, password) => {
     const resp = await fetchJson(`${API_BASE}/user_api.php?action=login`, {
       method: 'POST',
       body: JSON.stringify({ email, password })
     });
-    // Expect resp.user.api_token and resp.user
+ 
     const newToken = resp.user?.api_token ?? resp.user?.apiToken ?? null;
     setToken(newToken);
     setUser(resp.user);
     return resp;
   }, [fetchJson, setToken, setUser]);
 
-  // register: create new user and auto-login
-  const register = useCallback(async (name, email, password) => {
+  
+  const register = useCallback(async (name, email, password, role = 'user') => {
     const resp = await fetchJson(`${API_BASE}/user_api.php?action=register`, {
       method: 'POST',
-      body: JSON.stringify({ name, email, password })
+      body: JSON.stringify({ name, email, password, role })
     });
-    // If backend doesn't return user, auto-login
-    let final = resp;
-    if (!resp.user) {
-      try {
-        const loginResp = await fetchJson(`${API_BASE}/user_api.php?action=login`, {
-          method: 'POST',
-          body: JSON.stringify({ email, password })
-        });
-        final = loginResp;
-      } catch (e) {
-        // fall through, return original resp
-      }
-    }
-    const newToken = final.user?.api_token ?? null;
-    setToken(newToken);
-    setUser(final.user ?? null);
-    return final;
-  }, [fetchJson, setToken, setUser]);
+    
+    return resp;
+  }, [fetchJson]);
 
   const logout = useCallback(() => {
     setToken(null);
     setUser(null);
   }, [setToken, setUser]);
 
-  // authFetch - wrapper that injects token
+ 
   const authFetch = useCallback(async (path, opts = {}) => {
     const headers = opts.headers || {};
     if (token) headers['Authorization'] = 'Bearer ' + token;
@@ -175,14 +158,13 @@ export function useAuth() {
     return fetchJson(`${API_BASE}${path}`, opts, null);
   }, [fetchJson, token]);
 
-  // revalidate/me
+ 
   useEffect(() => {
     let cancelled = false;
     const init = async () => {
       if (!token) return;
       try {
-        // No /auth/me endpoint on backend; keep token-only flow
-        // If backend later supports it, wire it here.
+
       } catch (err) {
        
         console.warn('[useAuth] revalidate failed', err);
