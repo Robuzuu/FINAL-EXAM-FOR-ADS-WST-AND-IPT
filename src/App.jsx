@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useAuth from './hooks/useAuth.js';
-import Nav from './components/Nav.jsx';
+import Nav from './components/Nav.jsx'; 
 import Login from './components/Login.jsx';
 import Register from './components/Register.jsx';
 import ShipmentForm from './components/ShipmentForm.jsx';
