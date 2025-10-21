@@ -6,7 +6,7 @@ const LANGS = [
   { value: 'ja', label: 'Japanese / Romaji' },
 ];
 
-export default function SettingsSidebar({ open, onClose, theme, setTheme, language, setLanguage, onLogout }) {
+export default function SettingsSidebar({ open, onClose, theme, setTheme, language, setLanguage, onLogout, isAuthenticated = false }) {
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === 'Escape' && open) onClose && onClose();
@@ -75,15 +75,18 @@ export default function SettingsSidebar({ open, onClose, theme, setTheme, langua
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Applies to labels and messages (future enhancement).</p>
           </section>
 
-          <section>
-            <h3 className="font-medium mb-2">Account</h3>
-            <button
-              onClick={onLogout}
-              className="w-full px-3 py-2 rounded border border-red-300 text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
-            >
-              Logout
-            </button>
-          </section>
+          {isAuthenticated && (
+            <section>
+              <h3 className="font-medium mb-2">Account</h3>
+              <button
+                onClick={onLogout}
+                onDoubleClick={onLogout}
+                className="w-full px-3 py-2 rounded border border-red-300 text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+              >
+                Logout
+              </button>
+            </section>
+          )}
         </div>
       </div>
     </>
