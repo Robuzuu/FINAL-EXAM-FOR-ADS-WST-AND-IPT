@@ -6,6 +6,7 @@ export default function AdminPanel({ auth }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
+  const [shipSummary, setShipSummary] = useState({ pending: 0, received: 0, cancelled: 0, total: 0 });
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -19,9 +20,27 @@ export default function AdminPanel({ auth }) {
     }
   };
 
+  const fetchShipSummary = async () => {
+    try {
+      const res = await fetch('/courier/backend/api/shipment_api.php');
+      const data = await res.json();
+      const list = Array.isArray(data) ? data : [];
+      let pending = 0, received = 0, cancelled = 0;
+      list.forEach(s => {
+        const st = String(s.status || s.status_id || '').toLowerCase();
+        if (st.includes('cancel')) cancelled++;
+        else if (st.includes('receive')) received++;
+        else pending++;
+      });
+      setShipSummary({ pending, received, cancelled, total: list.length });
+    } catch (e) {
+
+    }
+  };
+
   useEffect(() => {
     if (auth.user && auth.user.role === 'admin') fetchUsers();
-   
+    if (auth.user && auth.user.role === 'admin') fetchShipSummary();
   }, [auth.user]);
 
   const filtered = users.filter(u => {
@@ -47,7 +66,26 @@ export default function AdminPanel({ auth }) {
 
   return (
     <div className="card mt-4">
-      <h3 className="text-lg font-semibold">Admin Panel - Users</h3>
+      <h3 className="text-lg font-semibold">Admin Panel</h3>
+      <div className="mt-2 grid grid-cols-2 gap-2">
+        <div className="p-3 rounded border border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-900/20">
+          <div className="text-xs text-gray-600 dark:text-gray-400">Pending</div>
+          <div className="text-xl font-semibold">{shipSummary.pending}</div>
+        </div>
+        <div className="p-3 rounded border border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-900/20">
+          <div className="text-xs text-gray-600 dark:text-gray-400">Received</div>
+          <div className="text-xl font-semibold">{shipSummary.received}</div>
+        </div>
+        <div className="p-3 rounded border border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-900/20">
+          <div className="text-xs text-gray-600 dark:text-gray-400">Cancelled</div>
+          <div className="text-xl font-semibold">{shipSummary.cancelled}</div>
+        </div>
+        <div className="p-3 rounded border border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-900/20">
+          <div className="text-xs text-gray-600 dark:text-gray-400">Total</div>
+          <div className="text-xl font-semibold">{shipSummary.total}</div>
+        </div>
+      </div>
+      <h4 className="text-md font-semibold mt-4">Users</h4>
       <div className="mt-2 flex gap-2">
         <input placeholder="Search users..." value={search} onChange={e => setSearch(e.target.value)} className="border px-2 py-1 rounded" />
         <button onClick={fetchUsers} className="px-3 py-1 border rounded">Refresh</button> {/* onClick */}
