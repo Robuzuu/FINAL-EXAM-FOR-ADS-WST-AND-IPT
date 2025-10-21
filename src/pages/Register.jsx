@@ -1,71 +1,136 @@
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
-import React, { useState } from 'react';
-import { useForm } from '../hooks/useAuth';
+export default function Register() {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    role: "user",
+  });
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-
-export default function Register({ auth, onSwitch, onSuccess, t }) {
-  const { values, onChange, reset } = useForm({ name: '', email: '', password: '', confirmPassword: '', role: 'user' });
-  const [msg, setMsg] = useState(null);
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); 
-    setMsg(null);
+    e.preventDefault();
 
-    const pwd = values.password || '';
-    const confirm = values.confirmPassword || '';
+  
+    const pwd = formData.password || "";
+    const confirm = formData.confirmPassword || "";
     const hasMin = pwd.length >= 8;
     const hasSpecial = /[^A-Za-z0-9]/.test(pwd);
     if (!hasMin || !hasSpecial) {
-      alert('Password must be at least 8 characters and include a special character.');
+      alert("Password must be at least 8 characters and include a special character.");
       return;
     }
     if (pwd !== confirm) {
-      alert('Passwords do not match.');
+      alert("Passwords do not match.");
       return;
     }
+
     try {
-      const resp = await auth.register(values.name, values.email, values.password, values.role);
-      setMsg('Registered successfully');
-      reset({ name: '', email: '', password: '', confirmPassword: '', role: 'user' });
-      if (onSuccess) onSuccess(resp);
+      const res = await fetch("http://localhost/courier/backend/api/user_api.php?action=register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setSuccess("Registration successful! Redirecting...");
+        setTimeout(() => navigate("/login"), 2000);
+      } else {
+        setError(data.message || "Registration failed");
+      }
     } catch (err) {
-      setMsg(err.error || 'Registration failed');
+        setTimeout (err)
+      setError("Server error");
     }
   };
 
   return (
-    <div className="card max-w-md mx-auto mt-6 text-left">
-      <h2 className="text-2xl font-semibold mb-2">{t ? t('auth.register.title') : 'Register'}</h2>
-      {msg && <div className="text-red-600 mb-2">{msg}</div>}
-      <form onSubmit={handleSubmit}>
-        <div className="mb-2">
-          <label className="block text-sm">{t ? t('auth.register.name') : 'Name'}</label>
-          <input name="name" value={values.name} onChange={onChange} className="w-full border rounded px-2 py-1 bg-white dark:bg-gray-800" />
-        </div>
-        <div className="mb-2">
-          <label className="block text-sm">{t ? t('auth.register.email') : 'Email'}</label>
-          <input name="email" value={values.email} onChange={onChange} className="w-full border rounded px-2 py-1 bg-white dark:bg-gray-800" />
-        </div>
-        <div className="mb-2">
-          <label className="block text-sm">{t ? t('auth.register.password') : 'Password'}</label>
-          <input name="password" type="password" value={values.password} onChange={onChange} className="w-full border rounded px-2 py-1 bg-white dark:bg-gray-800" />
-        </div>
-        <div className="mb-2">
-          <label className="block text-sm">Confirm Password</label>
-          <input name="confirmPassword" type="password" value={values.confirmPassword} onChange={onChange} className="w-full border rounded px-2 py-1 bg-white dark:bg-gray-800" />
-        </div>
-        <div className="mb-3">
-          <label className="block text-sm">Role</label>
-          <select name="role" value={values.role} onChange={onChange} className="w-full border rounded px-2 py-1 bg-white dark:bg-gray-800">
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-          </select>
-        </div>
+    <div className="flex justify-center items-center py-16">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-md w-full max-w-md"
+      >
+        <h2 className="text-2xl font-semibold text-center mb-6 text-blue-600">
+          Register
+        </h2>
 
-        <div className="flex gap-2">
-          <button type="submit" className="bg-blue-600 text-white px-3 py-1 rounded">{t ? t('auth.register.submit') : 'Register'}</button>
-          <button type="button" onClick={onSwitch} className="px-3 py-1 border rounded">{t ? t('auth.register.switch') : 'Back to Login'}</button>
-        </div>
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+        {success && <p className="text-green-500 text-center mb-4">{success}</p>}
+
+        <input
+          type="text"
+          name="name"
+          placeholder="Full Name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+          className="w-full p-3 mb-4 border rounded-md focus:outline-none focus:ring focus:ring-blue-300 dark:bg-gray-800"
+        />
+
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+          className="w-full p-3 mb-4 border rounded-md focus:outline-none focus:ring focus:ring-blue-300 dark:bg-gray-800"
+        />
+
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+          className="w-full p-3 mb-6 border rounded-md focus:outline-none focus:ring focus:ring-blue-300 dark:bg-gray-800"
+        />
+
+        <input
+          type="password"
+          name="confirmPassword"
+          placeholder="Confirm Password"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          required
+          className="w-full p-3 mb-6 border rounded-md focus:outline-none focus:ring focus:ring-blue-300 dark:bg-gray-800"
+        />
+
+        <select
+          name="role"
+          value={formData.role}
+          onChange={handleChange}
+          className="w-full p-3 mb-6 border rounded-md focus:outline-none focus:ring focus:ring-blue-300 dark:bg-gray-800"
+        >
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+
+        <button
+          type="submit"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-md transition"
+        >
+          Register
+        </button>
+
+        <p className="text-sm text-center mt-4">
+          Already have an account?{" "}
+          <Link to="/login" className="text-blue-600 hover:underline">
+            Login
+          </Link>
+        </p>
       </form>
     </div>
   );
