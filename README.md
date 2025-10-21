@@ -7,8 +7,11 @@
 Tailwind via CDN 
 
    npm install
+   
    npm run dev
+   
    npm run build
+   
    npm run preview
    
 - Theme is stored in `localStorage` key `courier_theme` (`light` | `dark`).
