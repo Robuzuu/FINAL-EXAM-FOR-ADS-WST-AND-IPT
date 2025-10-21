@@ -8,7 +8,7 @@ export default function Navbar({ auth, onNavigate, onSettings, t }) {
       localStorage.removeItem("courier_token");
     } catch {}
     if (auth && auth.logout) auth.logout();
-    if (onNavigate) onNavigate('loginUser');
+    if (onNavigate) onNavigate('welcome');
   };
 
   let user = auth?.user || null;
@@ -20,7 +20,7 @@ export default function Navbar({ auth, onNavigate, onSettings, t }) {
     <nav className="bg-blue-600 text-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
      
-        <button onClick={() => { setOpen(false); onNavigate && onNavigate(user ? 'dashboard' : 'loginUser'); }} className="text-xl font-bold hover:text-gray-200">
+        <button onClick={() => { setOpen(false); onNavigate && onNavigate(user ? 'dashboard' : 'welcome'); }} className="text-lg font-bold hover:text-gray-200 tracking-wide pr-3 mr-1">
           📦 {t ? t('nav.logo') : 'CourierTrack'}
         </button>
         
@@ -31,10 +31,10 @@ export default function Navbar({ auth, onNavigate, onSettings, t }) {
         </button>
 
         
-        <div className="hidden sm:flex gap-6 items-center">
+        <div className="hidden sm:flex gap-8 items-center">
           <button
-            onClick={() => onNavigate && onNavigate(user ? 'dashboard' : 'loginUser')}
-            className="hover:text-gray-200 transition-colors duration-200"
+            onClick={() => onNavigate && onNavigate(user ? 'dashboard' : 'welcome')}
+            className="hover:text-gray-200 transition-colors duration-200 px-4 py-2"
           >
             {t ? t('nav.home') : 'Home'}
           </button>
@@ -42,19 +42,13 @@ export default function Navbar({ auth, onNavigate, onSettings, t }) {
             <>
               <button
                 onClick={() => onNavigate && onNavigate('loginUser')}
-                className="hover:text-gray-200 transition-colors duration-200"
+                className="hover:text-gray-200 transition-colors duration-200 px-4 py-2"
               >
-                {t ? t('nav.userLogin') : 'User Login'}
-              </button>
-              <button
-                onClick={() => onNavigate && onNavigate('loginAdmin')}
-                className="hover:text-gray-200 transition-colors duration-200"
-              >
-                {t ? t('nav.adminLogin') : 'Admin Login'}
+                {t ? t('nav.login') : 'Login'}
               </button>
               <button
                 onClick={() => onNavigate && onNavigate('register')}
-                className="hover:text-gray-200 transition-colors duration-200"
+                className="hover:text-gray-200 transition-colors duration-200 px-4 py-2"
               >
                 {t ? t('nav.register') : 'Register'}
               </button>
@@ -65,19 +59,19 @@ export default function Navbar({ auth, onNavigate, onSettings, t }) {
             <>
               <button
                 onClick={() => onNavigate && onNavigate('dashboard')}
-                className="hover:text-gray-200 transition-colors duration-200"
+                className="hover:text-gray-200 transition-colors duration-200 px-4 py-2"
               >
                 {t ? t('nav.dashboard') : 'Dashboard'}
               </button>
               <button
                 onClick={() => onNavigate && onNavigate('create')}
-                className="hover:text-gray-200 transition-colors duration-200"
+                className="hover:text-gray-200 transition-colors duration-200 px-4 py-2"
               >
                 {t ? t('nav.create') : 'Create'}
               </button>
               <button
                 onClick={() => onNavigate && onNavigate('track')}
-                className="hover:text-gray-200 transition-colors duration-200"
+                className="hover:text-gray-200 transition-colors duration-200 px-4 py-2"
               >
                 {t ? t('nav.track') : 'Track'}
               </button>
@@ -86,7 +80,7 @@ export default function Navbar({ auth, onNavigate, onSettings, t }) {
               {user.role === "admin" && (
                 <button
                   onClick={() => onNavigate && onNavigate('admin')}
-                  className="hover:text-gray-200 transition-colors duration-200"
+                  className="hover:text-gray-200 transition-colors duration-200 px-4 py-2"
                 >
                   {t ? t('nav.admin') : 'Admin Panel'}
                 </button>
@@ -110,24 +104,23 @@ export default function Navbar({ auth, onNavigate, onSettings, t }) {
      
       <div className={`sm:hidden px-4 pb-3 space-y-2 border-t border-white/10 transition-all duration-200 ease-out origin-top ${open ? 'opacity-100 max-h-[50vh]' : 'opacity-0 max-h-0 overflow-hidden'}`}>
           <button
-            onClick={() => { setOpen(false); onNavigate && onNavigate(user ? 'dashboard' : 'loginUser'); }}
-            className="block w-full text-left hover:text-gray-200 py-1"
+            onClick={() => { setOpen(false); onNavigate && onNavigate(user ? 'dashboard' : 'welcome'); }}
+            className="block w-full text-left hover:text-gray-200 py-2 px-4"
           >
             {t ? t('nav.home') : 'Home'}
           </button>
           {!user ? (
             <>
-              <button onClick={() => { setOpen(false); onNavigate && onNavigate('loginUser'); }} className="block w-full text-left hover:text-gray-200 py-1">{t ? t('nav.userLogin') : 'User Login'}</button>
-              <button onClick={() => { setOpen(false); onNavigate && onNavigate('loginAdmin'); }} className="block w-full text-left hover:text-gray-200 py-1">{t ? t('nav.adminLogin') : 'Admin Login'}</button>
-              <button onClick={() => { setOpen(false); onNavigate && onNavigate('register'); }} className="block w-full text-left hover:text-gray-200 py-1">{t ? t('nav.register') : 'Register'}</button>
+              <button onClick={() => { setOpen(false); onNavigate && onNavigate('loginUser'); }} className="block w-full text-left hover:text-gray-200 py-2 px-4">{t ? t('nav.login') : 'Login'}</button>
+              <button onClick={() => { setOpen(false); onNavigate && onNavigate('register'); }} className="block w-full text-left hover:text-gray-200 py-2 px-4">{t ? t('nav.register') : 'Register'}</button>
             </>
           ) : (
             <>
-              <button onClick={() => { setOpen(false); onNavigate && onNavigate('dashboard'); }} className="block w-full text-left hover:text-gray-200 py-1">{t ? t('nav.dashboard') : 'Dashboard'}</button>
-              <button onClick={() => { setOpen(false); onNavigate && onNavigate('create'); }} className="block w-full text-left hover:text-gray-200 py-1">{t ? t('nav.create') : 'Create'}</button>
-              <button onClick={() => { setOpen(false); onNavigate && onNavigate('track'); }} className="block w-full text-left hover:text-gray-200 py-1">{t ? t('nav.track') : 'Track'}</button>
+              <button onClick={() => { setOpen(false); onNavigate && onNavigate('dashboard'); }} className="block w-full text-left hover:text-gray-200 py-2 px-4">{t ? t('nav.dashboard') : 'Dashboard'}</button>
+              <button onClick={() => { setOpen(false); onNavigate && onNavigate('create'); }} className="block w-full text-left hover:text-gray-200 py-2 px-4">{t ? t('nav.create') : 'Create'}</button>
+              <button onClick={() => { setOpen(false); onNavigate && onNavigate('track'); }} className="block w-full text-left hover:text-gray-200 py-2 px-4">{t ? t('nav.track') : 'Track'}</button>
               {user.role === 'admin' && (
-                <button onClick={() => { setOpen(false); onNavigate && onNavigate('admin'); }} className="block w-full text-left hover:text-gray-200 py-1">{t ? t('nav.admin') : 'Admin Panel'}</button>
+                <button onClick={() => { setOpen(false); onNavigate && onNavigate('admin'); }} className="block w-full text-left hover:text-gray-200 py-2 px-4">{t ? t('nav.admin') : 'Admin Panel'}</button>
               )}
               <div className="pt-2">
                 <button onClick={() => { setOpen(false); onSettings && onSettings(); }} className="w-full px-3 py-2 rounded-full border border-white/20 bg-white/15 hover:bg-white/25 transition-colors">⚙️ {t ? t('nav.settings') : 'Settings'}</button>
